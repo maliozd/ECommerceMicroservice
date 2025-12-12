@@ -5,10 +5,13 @@ builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
+
+var connectionString = builder.Configuration.GetConnectionString("DbConnectionString")!;
+builder.Services.AddNpgsqlDataSource(connectionString);
+
 builder.Services.AddMarten(options =>
 {
-    options.Connection(builder.Configuration.GetConnectionString("DbConnectionString")!);
-    options.DatabaseSchemaName = "other";
+    options.DatabaseSchemaName = "public";
 })
 .UseLightweightSessions()
 .UseNpgsqlDataSource();

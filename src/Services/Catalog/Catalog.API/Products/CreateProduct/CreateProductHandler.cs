@@ -1,7 +1,4 @@
-﻿
-using FluentValidation;
-
-namespace Catalog.API.Products.CreateProduct
+﻿namespace Catalog.API.Products.CreateProduct
 {
     public record CreateProductCommand(
         string Name,
@@ -11,8 +8,7 @@ namespace Catalog.API.Products.CreateProduct
         List<string> Category) : ICommand<CreateProductResult>;
     public record CreateProductResult(Guid Id);
 
-    internal class CreateProductCommandHandler(IDocumentSession documentSession, IValidator<CreateProductCommand> validator, ILogger<CreateProductCommandHandler> logger)
-                  : ICommandHandler<CreateProductCommand, CreateProductResult>
+    internal class CreateProductCommandHandler(IDocumentSession documentSession, ILogger<CreateProductCommandHandler> logger) : ICommandHandler<CreateProductCommand, CreateProductResult>
     {
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {

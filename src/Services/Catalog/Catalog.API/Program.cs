@@ -1,6 +1,6 @@
 using BuildingBlocks.Behaviors;
+using BuildingBlocks.Exceptions.Handler;
 using FluentValidation;
-using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,29 +24,10 @@ builder.Services.AddMarten(options =>
 .UseLightweightSessions()
 .UseNpgsqlDataSource();
 
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
 var app = builder.Build();
 
 app.MapCarter();
-
-app.UseExceptionHandler(builder =>
-{
-    builder.Run(async context =>
-    {
-        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-        if (exception is null)
-            return;
-
-        var exceptionDetail = new
-        {
-            Message = exception.Message,
-            ExceptionType = exception.GetType().Name,
-            StackTrace = exception.StackTrace,
-        };
-        context.Response.ContentType = "application/problem+json";
-        context.Response.StatusCode = 500;
-        await context.Response.WriteAsJsonAsync(exceptionDetail);
-
-    });
-});
-
+app.UseExceptionHandler((opt) => { });
 app.Run();
